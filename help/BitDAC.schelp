@@ -1,0 +1,135 @@
+class:: BitDAC
+summary:: render number from uint32 interpreted as bitvalues
+related:: Classes/DIBitShifter
+categories:: UGens>BitDSP
+
+description::
+
+render number from uint32 interpreted as bitvalues.
+
+classmethods::
+
+method::ar, kr
+
+argument::input
+input treated as code::uint32::
+
+argument::size
+number of bits used for conversion
+
+argument::offset
+offset for bitmask
+
+note::
+Huom! Selection of code::kr/ar:: for time-varying parameters has significant effect on calculated artifacts.
+The exact position of e.g. the appearance of new values (when does rounding happen wrt. other parameters?) causes bit-glitches
+::
+
+
+examples::
+
+explore
+
+code::
+(
+{
+	var freq= MouseX.kr(0.0001, 2);
+	var size = 6;
+	var offset = MouseY.kr(0, 32-size);
+	BitDAC.ar(LFTri.ar(freq), size,  offset)
+}.play
+)
+::
+
+
+bit-music
+
+code::
+(
+{
+	var freq= 0.5;
+	var size = [6, 8];
+	var offset = LFNoise0.kr(1).range(8, 12).round(1);
+	// var offset = 11;
+	BitDAC.ar(LFSaw.ar(freq), size,  offset)
+}.play
+)
+::
+
+Banger.
+
+code::
+Ndef(\banger).edit;
+Ndef(\banger).set(\carFreq, 42);
+Ndef(\banger).set(\carFreq, 52);
+Ndef(\banger).set(\carFreq, 32);
+Ndef(\banger).set(\carFreq, 67);
+
+(
+// banger
+Ndef(\banger, {|carFreq = 67|
+	var size = 3;
+	var offset = (19..32-size).clump(2).flop.collect{|row, i| i.odd.if({row.reverse}, {row})}.lace;
+	var lfFreq = LFPulse.kr(0.5).range(4/3, 4);
+	var dac = BitDAC.kr(SinOsc.kr(lfFreq), size,  offset);
+	var snd;
+	var wet = LFSaw.kr(0.25, 1).range(0, 1);
+	
+	snd = Splay.ar(
+		Mix([
+			SinOscFB.ar(
+				carFreq, 
+				dac.range(0, 2);
+			),
+			DelayL.ar(
+				SinOsc.ar(
+					carFreq,
+					dac.range(-pi, pi)
+				), 0.2, 0.0076
+			)
+		]),
+		0.1
+	).clip(-1, 1);
+	
+	SelectX.ar(wet, [snd, Squiz.ar(snd)])
+}).play
+)
+
+
+Ndef(\verb, {
+	JPverb.ar(Ndef(\banger).ar, damp: 0.8)
+})
+Ndef(\verb).edit
+::
+
+
+
+code::
+(
+// Huom! Selection of kr/ar for time-varying parameters has significant effect on calculated artifacts.
+// The exact position of e.g. the appearance of new values (when does rounding happen wrt. other parameters?) causes bit-glitches
+{
+	var size_ar, offset_ar;
+	var size_kr, offset_kr;
+	var bit_kr = BitVal.ir(2r0101010101010101);
+	var bit_ar = BitVal.ar(2r0101010101010101);
+	size_ar = SinOsc.ar(20, 1).range(1, 16).round(1);
+	size_kr = SinOsc.kr(20, 1).range(1, 16).round(1);
+	offset_ar = SinOsc.ar(20, 0).range(1, 16).round(1);
+	offset_kr = SinOsc.kr(20, 0).range(1, 16).round(1);
+	
+	[
+
+		BitDAC.ar(bit_kr, size_kr, offset_kr), // kkk
+		BitDAC.ar(bit_ar, size_kr, offset_kr), // akk
+		BitDAC.ar(bit_kr, size_ar, offset_ar), // kaa
+		BitDAC.ar(bit_ar, size_ar, offset_ar), // aaa
+		BitDAC.ar(bit_kr, size_ar, offset_kr), // kak
+		BitDAC.ar(bit_ar, size_ar, offset_kr), // aak
+		BitDAC.ar(bit_kr, size_kr, offset_ar), // kka
+		BitDAC.ar(bit_ar, size_kr, offset_ar), // aka
+	]
+	
+	}.plot(0.1);
+)
+::

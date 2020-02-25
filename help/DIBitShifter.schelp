@@ -1,0 +1,65 @@
+class:: DIBitShifter
+summary:: 16bit Demand-rate bitshifter interpreting input as bit-array
+related:: Classes/BitDAC Classes/BitAnd Classes/BitNot
+categories:: UGens>bitDSP
+
+description::
+
+16bit Demand-rate bitshifter
+
+
+classmethods::
+
+method::ar, kr
+
+argument::TODO
+
+argument::TODO
+
+
+examples::
+
+code::
+
+(
+Ndef(\noiseRing, {|freq = 5, tendency = 0.5, fb = 0|
+	var env, aEnv, alwaysEnv, gate;
+	var trig = Impulse.ar(freq);
+	var val = TDemand.ar(trig, 0,
+		DIBitShifter(
+			in: Dwrand([1, 0], [tendency, 1-tendency], inf),
+			fb: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: 2r10111
+		)
+	);
+	
+	gate = BitDAC.ar(val, 31, 0)!2;
+	
+	gate // .poll(Changed.ar(gate))
+})
+)
+
+(
+// with triggered sound synthesis
+Ndef(\noiseRing, {|freq = 5, tendency = 0.5, fb = 0|
+	var env, aEnv, alwaysEnv, gate;
+	var trig = Impulse.ar(freq);
+	var val = TDemand.ar(trig, 0,
+		DIBitShifter(
+			in: Dwrand([1, 0], [tendency, 1-tendency], inf),
+			fb: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: 2r10111
+		)
+	);
+	
+	gate = BitDAC.ar(val, 1);
+	
+	env = EnvGen.ar(Env.perc(0.025, 0.25), timeScale: freq.reciprocal, gate: gate);
+	aEnv = EnvGen.ar(Env([67, 1000, 67], [0, 0.1275], \exp), timeScale: freq.reciprocal, gate: gate);
+	alwaysEnv = EnvGen.ar(Env.perc(0.025, 0.05), timeScale: freq.reciprocal, gate: trig);
+	RLPF.ar(SinOscFB.ar(aEnv, 0.8, env)!2 * 0.5, 2000, 0.1) + Pulse.ar(1800, mul: alwaysEnv * 0.002)
+})
+)
+
+
+::

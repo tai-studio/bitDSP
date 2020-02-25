@@ -1,0 +1,81 @@
+class:: BitNot
+summary:: invert bits in 16bit representation
+related:: Classes/DIBitShifter Classes/BitDAC Classes/BitAnd
+categories:: UGens>bitDSP
+
+description::
+
+classmethods::
+
+method::ar, kr
+
+argument::in
+input treated as code::uint16::
+
+argument::size
+number of bits used for conversion
+
+argument::offset
+offset for bitmask
+
+examples::
+
+code::
+(
+{
+	var freq= MouseX.kr(0.0001, 2);
+	var size = 6;
+	var offset = MouseY.kr(0, 32-size);
+	BitNot.ar(LFTri.ar(freq), size,  offset)
+}.play
+)
+::
+
+
+Banger.
+
+code::
+Ndef(\banger).edit;
+Ndef(\banger).set(\carFreq, 42);
+Ndef(\banger).set(\carFreq, 52);
+Ndef(\banger).set(\carFreq, 32);
+Ndef(\banger).set(\carFreq, 67);
+
+(
+// banger
+Ndef(\banger, {|carFreq = 67|
+	var size = 3;
+	var offset = (19..32-size).clump(2).flop.collect{|row, i| i.odd.if({row.reverse}, {row})}.lace;
+	var lfFreq = LFPulse.kr(0.5).range(4/3, 4);
+	var dac = BitNot.kr(SinOsc.kr(lfFreq), size,  offset);
+	var snd;
+	var wet = LFSaw.kr(0.25, 1).range(0, 1);
+	
+	snd = Splay.ar(
+		Mix([
+			SinOscFB.ar(
+				carFreq, 
+				dac.range(0, 2);
+			),
+			DelayL.ar(
+				SinOsc.ar(
+					carFreq,
+					dac.range(-pi, pi)
+				), 0.2, 0.0076
+			)
+		]),
+		0.1
+	).clip(-1, 1);
+	
+	SelectX.ar(wet, [snd, Squiz.ar(snd)])
+}).play
+)
+
+
+Ndef(\verb, {
+	JPverb.ar(Ndef(\banger).ar, damp: 0.8)
+})
+Ndef(\verb).edit
+
+
+::

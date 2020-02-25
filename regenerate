@@ -1,0 +1,1 @@
+python ../../supercollider/tools/cmake_gen/generate_server_plugin_cmake.py . -a LFSaw -P "bitDSP" -f "plugins" -C "classes" -H "help"
