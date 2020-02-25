@@ -21,11 +21,9 @@ public:
     // ~BitVal();
 
 private:
-    // Calc function, audio
+    // Calc functions
     void next_a(int nSamples);
-
-    // Calc function, control
-    void next(int nSamples);
+    void next_k(int nSamples);
     // Member variables
 };
 

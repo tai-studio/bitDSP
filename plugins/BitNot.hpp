@@ -21,7 +21,8 @@ public:
     // ~BitNot();
 
 private:
-    // Calc function, audio
+    // Calc functions
+    void next_k(int nSamples);
     void next_a(int nSamples);
 
     // Member variables

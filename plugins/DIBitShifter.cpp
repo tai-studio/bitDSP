@@ -18,6 +18,10 @@
 
 // InterfaceTable contains pointers to functions in the host (server).
 static InterfaceTable *ft;
+
+
+namespace bitDSP {
+
 typedef unsigned int uint;
 // declare struct to hold unit generator state
 struct DIBitShifter : public Unit
@@ -76,14 +80,17 @@ void DIBitShifter_next(DIBitShifter *unit, int inNumSamples)
 
         unit->state = x;
         // std::cout << "bSh: " << x.to_string() << '\n';        // printf("\n");
-        uint32 outVal = (uint32) x.to_ulong();
 
-        OUT0(0) = *(float32*)&outVal; // direct cast from uint32 to float32
+        // uint32 ui_out = (uint32) x.to_ulong();
+        // OUT0(0) = *(float32*)&ui_out; // direct cast from uint32 to float32
+        OUT0(0) = b2f(x);
+
     } else { // reset
         float32 fState = DEMANDINPUT_A(2, inNumSamples);
         // bit16 initialState = ;
 
-        unit->state = (uint16) *(uint32*)&(fState);
+        // unit->state = (uint16) *(uint32*)&(fState);
+        unit->state = f2b(fState);
 
         RESETINPUT(0);
         RESETINPUT(1);
@@ -91,12 +98,12 @@ void DIBitShifter_next(DIBitShifter *unit, int inNumSamples)
     }
 }
 
-
+} // namespace bitDSP
 
 //////////////////////////////
 PluginLoad(bitDSP)
 {
     // InterfaceTable *inTable implicitly given as argument to load function
     ft = inTable;
-    DefineDtorUnit(DIBitShifter);
+    DefineDtorUnit(bitDSP::DIBitShifter);
 }

@@ -67,7 +67,7 @@ void BitDAC::next_kkk(int i_numSamples) {
     const float f_input  = in0(0);
     const float f_size   = in0(1);
     const float f_offset = in0(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     int i_size       = static_cast<int>(f_size);
     int i_offset     = static_cast<int>(f_offset);
@@ -88,9 +88,9 @@ void BitDAC::next_kkk(int i_numSamples) {
 
     f_out = zapgremlins(f_out);
 
-    // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+    // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
     for (int i = 0; i < i_numSamples; ++i) {
-        outbuf[i]        = f_out;
+        fp_output[i] = f_out;
     }
 }
 
@@ -98,7 +98,7 @@ void BitDAC::next_aaa(int i_numSamples) {
     const float* fp_input = in(0);
     const float* fp_size = in(1);
     const float* fp_offset = in(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     for (int i = 0; i < i_numSamples; ++i) {
         float32 f_in = fp_input[i];
@@ -119,8 +119,8 @@ void BitDAC::next_aaa(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        fp_output[i] = zapgremlins(f_out);
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
     }
 }
 
@@ -129,7 +129,7 @@ void BitDAC::next_kaa(int i_numSamples) {
     const float  f_input   = in0(0);
     const float* fp_size   = in(1);
     const float* fp_offset = in(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     float32 f_in = f_input;
     bit16 bit_in = f2b(f_in); // direct cast into bit16
@@ -149,8 +149,8 @@ void BitDAC::next_kaa(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        fp_output[i] = zapgremlins(f_out);
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
     }
 }
 
@@ -158,7 +158,7 @@ void BitDAC::next_akk(int i_numSamples) {
     const float* fp_input = in(0);
     const float f_size    = in0(1);
     const float f_offset  = in0(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     int i_size       = static_cast<int>(f_size);
     int i_offset     = static_cast<int>(f_offset);
@@ -179,9 +179,9 @@ void BitDAC::next_akk(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
+        fp_output[i] = zapgremlins(f_out);
 
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
 
     }
 }
@@ -190,7 +190,7 @@ void BitDAC::next_kka(int i_numSamples) {
     const float  f_input   = in0(0);
     const float  f_size    = in0(1);
     const float* fp_offset = in(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     float32 f_in = f_input;
     bit16 bit_in = f2b(f_in); // direct cast into bit16
@@ -211,8 +211,8 @@ void BitDAC::next_kka(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        fp_output[i] = zapgremlins(f_out);
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
     }
 }
 
@@ -230,7 +230,7 @@ void BitDAC::next_kak(int i_numSamples) {
     const float  f_input   = in0(0);
     const float* fp_size   = in(1);
     const float  f_offset  = in0(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     float32 f_in = f_input;
     bit16 bit_in = f2b(f_in); // direct cast into bit16
@@ -251,8 +251,8 @@ void BitDAC::next_kak(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        fp_output[i] = zapgremlins(f_out);
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
     }
 }
 
@@ -260,7 +260,7 @@ void BitDAC::next_aka(int i_numSamples) {
     const float* fp_input  = in(0);
     const float  f_size    = in0(1);
     const float* fp_offset = in(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     int i_size       = static_cast<int>(f_size);
     uint16 ui_maxVal = (1 << i_size)-1; // maximum value that fits into i_size
@@ -280,9 +280,9 @@ void BitDAC::next_aka(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
+        fp_output[i] = zapgremlins(f_out);
 
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
 
     }
 }
@@ -291,7 +291,7 @@ void BitDAC::next_aak(int i_numSamples) {
     const float* fp_input = in(0);
     const float* fp_size = in(1);
     const float f_offset = in0(2);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
     
     int i_offset     = static_cast<int>(f_offset);
 
@@ -313,9 +313,9 @@ void BitDAC::next_aak(int i_numSamples) {
               / static_cast<double>(ui_maxVal)
             ); // normalise
 
-        outbuf[i]        = zapgremlins(f_out);
+        fp_output[i] = zapgremlins(f_out);
 
-        // std::cout << outbuf[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
+        // std::cout << fp_output[i] << '\t' << ui_maxVal << '\t' << i_offset << '\t' << i_size << '\n';
 
     }
 }

@@ -13,31 +13,84 @@ static InterfaceTable* ft;
 namespace bitDSP {
 
 BitAnd::BitAnd() {
-    mCalcFunc = make_calc_function<BitAnd, &BitAnd::next_a>();
-    next_a(1);
+    if (isAudioRateIn(0)) { // ax
+        if (isAudioRateIn(1)) { // aa
+            mCalcFunc = make_calc_function<BitAnd, &BitAnd::next_aa>();
+            next_aa(1);
+        } else { // ak
+            mCalcFunc = make_calc_function<BitAnd, &BitAnd::next_ak>();
+            next_ak(1);
+        }
+    } else { // kx
+        if (isAudioRateIn(1)) { // ka
+            mCalcFunc = make_calc_function<BitAnd, &BitAnd::next_ka>();
+            next_ka(1);
+        } else { // ak
+            mCalcFunc = make_calc_function<BitAnd, &BitAnd::next_kk>();
+            next_kk(1);
+        }
+    }
+
 }
 
-void BitAnd::next_a(int nSamples) {
-    const float* input1 = in(0);
-    const float* input2 = in(1);
-    float32 fVal1; // current value in float representation
-    bit16 iVal1; // current value in integer representation
-    float32 fVal2; // current value in float representation
-    bit16 iVal2; // current value in integer representation
-    float* outbuf = out(0);
-    uint32 outVal;
-
+void BitAnd::next_aa(int nSamples) {
+    const float* fp_input1 = in(0);
+    const float* fp_input2 = in(1);
+    float* fp_output = out(0);
 
     for (int i = 0; i < nSamples; ++i) {
-        fVal1 = input1[i];
-        iVal1 = (uint16) *(uint32*)&fVal1; // direct cast
-        fVal2 = input2[i];
-        iVal1 = (uint16) *(uint32*)&fVal2; // direct cast
-        outVal = (uint32) (iVal1 & iVal2).to_ulong();
-        outbuf[i] = *(float32*)&outVal; // direct cast from ulong to float64, then cast to float32
+        float32 f_in1 = fp_input1[i];
+        bit16 bit_in1 = f2b(f_in1); // direct cast
+        float32 f_in2 = fp_input2[i];
+        bit16 bit_in2 = f2b(f_in2); // direct cast
+
+        fp_output[i] = b2f(bit_in1 & bit_in2);
     }
 }
 
+void BitAnd::next_ak(int nSamples) {
+    const float* fp_input1 = in(0);
+    const float f_in2 = in0(1);
+    float* fp_output = out(0);
+
+    bit16 bit_in2 = f2b(f_in2); // direct cast
+
+    for (int i = 0; i < nSamples; ++i) {
+        float32 f_in1 = fp_input1[i];
+        bit16 bit_in1 = f2b(f_in1); // direct cast
+
+        fp_output[i] = b2f(bit_in1 & bit_in2);
+    }
+}
+
+void BitAnd::next_ka(int nSamples) {
+    const float f_in1 = in0(0);
+    const float* fp_input2 = in(1);
+    float* fp_output = out(0);
+
+    bit16 bit_in1 = f2b(f_in1); // direct cast
+
+    for (int i = 0; i < nSamples; ++i) {
+        float32 f_in2 = fp_input2[i];
+        bit16 bit_in2 = f2b(f_in2); // direct cast
+
+        fp_output[i] = b2f(bit_in1 & bit_in2);
+    }
+}
+
+void BitAnd::next_kk(int nSamples) {
+    const float f_in1 = in0(0);
+    const float f_in2 = in0(1);
+    float* fp_output = out(0);
+
+    bit16 bit_in1 = f2b(f_in1); // direct cast
+    bit16 bit_in2 = f2b(f_in2); // direct cast
+    float32 f_out = b2f(bit_in1 & bit_in2);
+    for (int i = 0; i < nSamples; ++i) {
+
+        fp_output[i] = f_out;
+    }
+}
 
 } // namespace bitDSP
 

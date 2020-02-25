@@ -22,8 +22,9 @@ public:
     // ~BitSort();
 
 private:
-    // Calc function, audio
+    // Calc functions
     void next_a(int nSamples);
+    void next_k(int nSamples);
 
     // Member variables
 };

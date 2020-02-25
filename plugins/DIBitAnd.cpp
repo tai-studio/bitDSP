@@ -18,6 +18,9 @@
 
 // InterfaceTable contains pointers to functions in the host (server).
 static InterfaceTable *ft;
+
+namespace bitDSP {
+
 typedef unsigned int uint;
 // declare struct to hold unit generator state
 struct DIBitAnd : public Unit
@@ -54,16 +57,17 @@ void DIBitAnd_next(DIBitAnd *unit, int inNumSamples)
         const float32 in1   = DEMANDINPUT_A(0, inNumSamples);
         const float32 in2   = DEMANDINPUT_A(1, inNumSamples);
         const float32 mask  = DEMANDINPUT_A(2, inNumSamples);
-        const bit16 bIn1 = (uint16) *(uint32*)&in1; // direct cast;
-        const bit16 bIn2 = (uint16) *(uint32*)&in2; // direct cast;
-        const bit16 bMask = (uint16) *(uint32*)&mask; // direct cast;
-        bit16 bOut;
+        const bit16 bit_in1 = f2b(in1); // direct cast;
+        const bit16 bit_in2 = f2b(in2); // direct cast;
+        const bit16 bit_mask = f2b(mask); // direct cast;
+        bit16 bit_out;
 
-        bOut = (bIn1 & bIn2); // process
-        bOut = (bMask & bOut) | (~bMask & bIn1); // apply only to selected bits
+        bit_out = (bit_in1 & bit_in2); // process
+        bit_out = (bit_mask & bit_out) | (~bit_mask & bit_in1); // apply only to selected bits
 
-        uint32 outVal = (uint32) (bIn1).to_ulong();
-        OUT0(0) = *(float32*)&outVal; // direct cast from uint32 to float32
+        // uint32 ui_out = (uint32) (bit_out).to_ulong();
+        // OUT0(0) = *(float32*)&ui_out; // direct cast from uint32 to float32
+        OUT0(0) = b2f(bit_out);
     } else { // reset
         // bubble up reset
         RESETINPUT(0);
@@ -72,6 +76,7 @@ void DIBitAnd_next(DIBitAnd *unit, int inNumSamples)
     }
 }
 
+} // namespace bitDSP
 
 
 //////////////////////////////
@@ -79,5 +84,5 @@ PluginLoad(bitDSP)
 {
     // InterfaceTable *inTable implicitly given as argument to load function
     ft = inTable;
-    DefineDtorUnit(DIBitAnd);
+    DefineDtorUnit(bitDSP::DIBitAnd);
 }

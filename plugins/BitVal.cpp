@@ -8,7 +8,7 @@
 
 #include "SC_PlugIn.hpp"
 #include "BitVal.hpp"
-#include <iostream>
+// #include <iostream>
 
 static InterfaceTable* ft;
 
@@ -16,39 +16,33 @@ namespace bitDSP {
 
 BitVal::BitVal() {
     if (isAudioRateIn(0)) {
-        // std::cout << "audio\n";
         mCalcFunc = make_calc_function<BitVal, &BitVal::next_a>();
         next_a(1);
     } else {
-        // std::cout << "val control\n";
-
-        mCalcFunc = make_calc_function<BitVal, &BitVal::next>();
-        next(1);
+        mCalcFunc = make_calc_function<BitVal, &BitVal::next_k>();
+        next_k(1);
     }
 }
 
-void BitVal::next(int nSamples) {
+void BitVal::next_k(int nSamples) {
     float in = in0(0);
-    float* outbuf = out(0);
+    float* fp_output = out(0);
 
-    bit16 bOut = (uint16) in;
-    uint32 outVal = (uint32) (bOut).to_ulong();
+    bit16 bit_out = (uint16) in;
+    float f_out = b2f(bit_out);
     for (int i=0; i < nSamples; ++i){
-        outbuf[i] = *(float32*)&outVal; // direct cast from uint32 to float32
-        // std::cout << "val: " << outVal << '\n';
+        fp_output[i] = f_out;
     }
 }
 
 void BitVal::next_a(int nSamples) {
-    const float* input = in(0);
-    float* outbuf = out(0);
+    const float* fp_input = in(0);
+    float* fp_output = out(0);
 
     for (int i = 0; i < nSamples; ++i) {
-        float32 in = input[i];
-        bit16 bOut = (uint16) in;
-
-        uint32 outVal = (uint32) (bOut).to_ulong();
-        outbuf[i] = *(float32*)&outVal; // direct cast from uint32 to float32
+        float32 in = fp_input[i];
+        bit16 bit_out = (uint16) in;
+        fp_output[i] = b2f(bit_out);
     }
 }
 

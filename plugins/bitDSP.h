@@ -20,4 +20,9 @@ inline bit16 f2b(float32 f_in) {
 	return (uint16) *(uint32*)&f_in;
 }
 
+
+inline float32 b2f(bit16 bit_in) {
+	uint32 ui_val = (uint32) (bit_in).to_ulong();
+    return *(float32*)&ui_val; // direct cast from uint32 to float32
+}
 }

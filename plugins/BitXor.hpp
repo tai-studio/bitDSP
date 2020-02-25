@@ -22,8 +22,12 @@ public:
     // ~BitXor();
 
 private:
-    // Calc function, audio
-    void next_a(int nSamples);
+    // Calc functions
+    void next_aa(int nSamples);
+    void next_ak(int nSamples);
+    void next_ka(int nSamples);
+    void next_kk(int nSamples);
+
 
     // Member variables
 };

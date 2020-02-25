@@ -8,36 +8,45 @@
 
 #include "SC_PlugIn.hpp"
 #include "BitNot.hpp"
-#include <iostream>
+// #include <iostream>
 
 static InterfaceTable* ft;
 
 namespace bitDSP {
 
 BitNot::BitNot() {
-    mCalcFunc = make_calc_function<BitNot, &BitNot::next_a>();
-    next_a(1);
-}
-
-void BitNot::next_a(int nSamples) {
-    const float* input = in(0);
-    float32 fVal; // current value in float representation
-    bit16 iVal; // current value in integer representation
-    float* outbuf = out(0);
-    uint32 outVal;
-    
-
-    for (int i = 0; i < nSamples; ++i) {
-        fVal = input[i];
-        iVal = (uint16) *(uint32*)&fVal; // direct cast
-
-        // std::cout << "nIn: " << iVal.to_string() << '\n';
-
-        outVal = (uint32) (iVal.flip()).to_ulong();
-        outbuf[i] = *(float32*)&outVal; // direct cast from uint32 to float32
+    if (isAudioRateIn(0)) { // a
+        mCalcFunc = make_calc_function<BitNot, &BitNot::next_a>();
+        next_a(1);
+    } else {
+        mCalcFunc = make_calc_function<BitNot, &BitNot::next_k>();
+        next_k(1);
     }
 }
 
+void BitNot::next_a(int nSamples) {
+    const float* fp_input = in(0);
+    float* fp_output = out(0);
+
+    for (int i = 0; i < nSamples; ++i) {
+        float32 f_in = fp_input[i];
+        bit16 bit_in = f2b(f_in); // direct cast
+
+        // std::cout << "nIn: " << bit_in.to_string() << '\n';
+        fp_output[i] = b2f(bit_in.flip());
+    }
+}
+
+void BitNot::next_k(int nSamples) {
+    const float f_in = in0(0);
+    float* fp_output = out(0);
+
+    bit16 bit_in = f2b(f_in); // direct cast
+    float32 f_out = b2f(bit_in.flip());
+    for (int i = 0; i < nSamples; ++i) {
+        fp_output[i] = f_out;
+    }
+}
 
 } // namespace bitDSP
 
