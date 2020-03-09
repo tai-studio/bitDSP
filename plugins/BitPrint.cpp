@@ -39,7 +39,7 @@ void BitPrint::next(int nSamples) {
 
     if (f_trig > 0.f && m_trig <= 0.f) {
         const bit16 bit_in = f2b(f_input); // direct cast
-        std::cout << "bit: " << bit_in.to_string() << '\n';
+        std::cout << "bit: 2r" << bit_in.to_string() << '\n';
     }
     m_trig = f_trig;
 
@@ -61,7 +61,7 @@ void BitPrint::next_a(int nSamples) {
 
         if (curtrig > 0.f && prevtrig <= 0.f) {
             bit16 bit_in = f2b(in); // direct cast
-            std::cout << "bit: " << bit_in.to_string() << '\n';
+            std::cout << "bit: 2r" << bit_in.to_string() << '\n';
         } prevtrig = curtrig;
 
         fp_output[i] = in;
@@ -71,7 +71,7 @@ void BitPrint::next_a(int nSamples) {
 
 } // namespace bitDSP
 
-PluginLoad(bitDSP) {
+PluginLoad(bitDSPUGens) {
     // Plugin magic
     ft = inTable;
     registerUnit<bitDSP::BitPrint>(ft, "BitPrint");

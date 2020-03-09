@@ -94,7 +94,7 @@ void BitAnd::next_kk(int nSamples) {
 
 } // namespace bitDSP
 
-PluginLoad(bitDSP) {
+PluginLoad(bitDSPUGens) {
     // Plugin magic
     ft = inTable;
     registerUnit<bitDSP::BitAnd>(ft, "BitAnd");

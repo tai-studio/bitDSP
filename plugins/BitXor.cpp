@@ -94,7 +94,7 @@ void BitXor::next_kk(int nSamples) {
 
 } // namespace bitDSP
 
-PluginLoad(bitDSP) {
+PluginLoad(bitDSPUGens) {
     // Plugin magic
     ft = inTable;
     registerUnit<bitDSP::BitXor>(ft, "BitXor");

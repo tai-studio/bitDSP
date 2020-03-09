@@ -327,7 +327,7 @@ void BitDAC::next_aak(int i_numSamples) {
 
 } // namespace bitDSP
 
-PluginLoad(bitDSP) {
+PluginLoad(bitDSPUGens) {
     // Plugin magic
     ft = inTable;
     registerUnit<bitDSP::BitDAC>(ft, "BitDAC");

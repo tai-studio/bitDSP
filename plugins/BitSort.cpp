@@ -51,7 +51,7 @@ void BitSort::next_k(int nSamples) {
 
 } // namespace bitDSP
 
-PluginLoad(bitDSP) {
+PluginLoad(bitDSPUGens) {
     // Plugin magic
     ft = inTable;
     registerUnit<bitDSP::BitSort>(ft, "BitSort");
