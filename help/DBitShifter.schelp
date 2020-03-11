@@ -1,6 +1,6 @@
 class:: DBitShifter
 summary:: 16bit Demand-rate bitshifter interpreting input as bit-array
-related:: Classes/BitDAC Classes/BitAnd Classes/BitNot
+related:: Classes/BitDAC Classes/BitAnd Classes/BitNot Classes/BitVal
 categories:: UGens>bitDSP
 
 description::
@@ -10,56 +10,167 @@ description::
 
 classmethods::
 
-method::ar, kr
+method::new
 
-argument::TODO
-
-argument::TODO
-
+argument::in
+Bit value (use link::Classes/BitVal:: or link::Classes/DBitVal::) to feed into the buffer
+argument::hop
+hop size
+argument::wrap
+If code::1::, values falling out will be fed back into the register. If code::0::, values from teletype::in:: are used. 
+argument::resetval
+Bit value to reset the shift register to.
 
 examples::
 
 code::
+Ndef(\noiseRing).edit
 
-(
-Ndef(\noiseRing, {|freq = 5, tendency = 0.5, fb = 0|
-	var env, aEnv, alwaysEnv, gate;
-	var trig = Impulse.ar(freq);
-	var val = TDemand.ar(trig, 0,
-		DBitShifter(
-			in: Dwrand([1, 0], [tendency, 1-tendency], inf),
-			fb: Dwrand([0, 1], [1-fb, fb], inf).poll,
-			resetval: 2r10111
-		)
-	);
-	
-	gate = BitDAC.ar(val, 31, 0)!2;
-	
-	gate // .poll(Changed.ar(gate))
-})
-)
 
 (
 // with triggered sound synthesis
-Ndef(\noiseRing, {|freq = 5, tendency = 0.5, fb = 0|
+Ndef(\noiseRing).addSpec(\tendency, [0, 1]);
+Ndef(\noiseRing).addSpec(\fb, [0, 1]);
+Ndef(\noiseRing).addSpec(\trigFreq, [10, 100]);
+
+Ndef(\noiseRing, {|trigFreq = 5, tendency = 0.5, fb = 0|
 	var env, aEnv, alwaysEnv, gate;
-	var trig = Impulse.ar(freq);
+	var trig = Impulse.ar(trigFreq);
 	var val = TDemand.ar(trig, 0,
 		DBitShifter(
-			in: Dwrand([1, 0], [tendency, 1-tendency], inf),
-			fb: Dwrand([0, 1], [1-fb, fb], inf).poll,
-			resetval: 2r10111
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
 		)
 	);
 	
 	gate = BitDAC.ar(val, 1);
 	
-	env = EnvGen.ar(Env.perc(0.025, 0.25), timeScale: freq.reciprocal, gate: gate);
-	aEnv = EnvGen.ar(Env([67, 1000, 67], [0, 0.1275], \exp), timeScale: freq.reciprocal, gate: gate);
-	alwaysEnv = EnvGen.ar(Env.perc(0.025, 0.05), timeScale: freq.reciprocal, gate: trig);
-	RLPF.ar(SinOscFB.ar(aEnv, 0.8, env)!2 * 0.5, 2000, 0.1) + Pulse.ar(1800, mul: alwaysEnv * 0.002)
+	env = EnvGen.ar(Env.perc(0.025, 0.25), timeScale: trigFreq.reciprocal, gate: gate);
+	RLPF.ar(SinOscFB.ar(500, 0.8, env)!2 * 0.5, 2000, 0.1);
 })
 )
 
 
+
+(
+// direct trigger output
+Ndef(\noiseRing).addSpec(\tendency, [0, 1]);
+Ndef(\noiseRing).addSpec(\fb, [0, 1]);
+Ndef(\noiseRing).addSpec(\trigFreq, [10, 10000, \exp]);
+
+Ndef(\noiseRing, {|trigFreq = 5, tendency = 0.5, fb = 0|
+	var env, aEnv, alwaysEnv, gate;
+	var trig = Impulse.ar(trigFreq);
+	var val = Demand.ar(trig, 0,
+		DBitShifter(
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
+		)
+	);
+	
+	// BitDAC.ar(val, 5)!2; // 1-bit synthesis
+	BitDAC.ar(val, 1)!2; // 5-bit synthesis
+	
+})
+)
+
+
+(
+// frequency for oscillator
+Ndef(\noiseRing).addSpec(\tendency, [0, 1]);
+Ndef(\noiseRing).addSpec(\fb, [0, 1]);
+Ndef(\noiseRing).addSpec(\trigFreq, [10, 10000, \exp]);
+
+Ndef(\noiseRing, {|trigFreq = 5, tendency = 0.5, fb = 0|
+	var env, aEnv, alwaysEnv, gate;
+	var trig = Impulse.ar(trigFreq);
+	var freq;
+	var val = Demand.ar(trig, 0,
+		DBitShifter(
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
+		)
+	);
+	
+	freq = BitDAC.ar(val, 3, [0, 3]).linexp(0, 1, 200, 3200); // 2-bit synthesis
+	// freq = BitDAC.ar(val, 5).linexp(0, 1, 200, 800); // 5-bit synthesis
+
+	SinOsc.ar(freq.lag(0.01))
+})
+)
+
+
+(
+// frequency for oscillator, independant trigger for amplitude envelope
+Ndef(\noiseRing).addSpec(\tendency, [0, 1]);
+Ndef(\noiseRing).addSpec(\fb, [0, 1]);
+Ndef(\noiseRing).addSpec(\trigFreq, [10, 10000, \exp]);
+
+Ndef(\noiseRing, {|trigFreq = 5, tendency = 0.5, fb = 0|
+	var trig = Impulse.ar(trigFreq);
+	var freq;
+	var amp;
+	
+	amp = TDemand.ar(trig, 0,
+		DBitShifter(
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
+		)
+	);
+
+	amp = Env.perc(0.05, 0.95).ar(gate: BitDAC.ar(amp, 1), timeScale: trigFreq.reciprocal);
+	
+	freq = Demand.ar(trig, 0,
+		DBitShifter(
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
+		)
+	);
+	
+	freq = BitDAC.ar(freq, 3, [0, 3]).linexp(0, 1, 200, 3200); // 2-bit synthesis
+	// freq = BitDAC.ar(val, 5).linexp(0, 1, 200, 800); // 5-bit synthesis
+
+	SinOsc.ar(freq.lag(0.01)) * amp
+}
+)
+)
+
+
+(
+// frequency for oscillator, independant trigger for amplitude envelope
+Ndef(\noiseRing).addSpec(\tendency, [0, 1]);
+Ndef(\noiseRing).addSpec(\fb, [0, 1]);
+Ndef(\noiseRing).addSpec(\trigFreq, [10, 10000, \exp]);
+
+Ndef(\noiseRing, {|trigFreq = 5, tendency = 0.5, fb = 0|
+	var trig
+	var freq;
+	var amp;
+	var rungler;
+	var clock, input;
+	
+	trig = ;
+	register = Demand.ar(trig, 0,
+		DBitShifter(
+			in: Dwrand([BitVal.max, 0], [tendency, 1-tendency], inf),
+			wrap: Dwrand([0, 1], [1-fb, fb], inf).poll,
+			resetval: BitVal.ir(2r10111)
+		)
+	);
+	input = LFTri.ar() bitXor: BitDAC.ar(register, 1, 16);
+	osc1 = LFTri.ar(freq)
+	freq = 
+	
+	freq = BitDAC.ar(freq, 3, [0, 3]).linexp(0, 1, 200, 3200); // 2-bit synthesis
+	// freq = BitDAC.ar(val, 5).linexp(0, 1, 200, 800); // 5-bit synthesis
+
+	SinOsc.ar(freq.lag(0.01)) * amp
+}
+)
+)
 ::

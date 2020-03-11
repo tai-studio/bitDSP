@@ -7,16 +7,8 @@
 
 #include "SC_PlugIn.h"
 #include "bitDSP.h"
-#include <iostream>
+// #include <iostream>
 
-// #include <stdio.h>
-
-// #ifndef MAXFLOAT
-// # include <float.h>
-// # define MAXFLOAT FLT_MAX
-// #endif
-
-// InterfaceTable contains pointers to functions in the host (server).
 static InterfaceTable *ft;
 
 
