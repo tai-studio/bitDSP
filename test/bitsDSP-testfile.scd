@@ -193,6 +193,144 @@ s.reboot
 
 ////////////////////////////////////////////////////////////
 
+/// DBitLFSR
+
+
+// due to compute optimisation (one less shift operation needed), LFSR works with left-shift rather than (common) right-shift operations. I.e., values travel right-to-left and polynomial (polynome indeces) need to be read from right to to left: x^16 + x^15 + x^14 + ... + x^1
+(
+{var trig = Impulse.ar(300); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitLFSR(
+		mask:     BitVal.ir(2r1011010000000000),
+		resetval: BitVal.ir(2r11)
+	)),
+	trig)
+}.plot(0.15)
+// bit:
+)
+
+Ndef(\lfsr).edit
+(
+Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr, {
+	var tFreq = \tFreq.kr(100);
+	var trig = Impulse.ar(tFreq);
+	var bits = Demand.ar(trig, 0, demandUGens: DBitLFSR(
+		// mask:     BitVal.ir(2r1011010000000000), // maximum period
+		mask:     BitVal.ir(2r1011110000000000), // very much smaller period
+		resetval: BitVal.ir(2r11)
+	));
+
+	BitDAC.ar(bits, 16).range(-1, 1)!2;
+})
+)
+
+
+1772
+1770
+1585
+1583
+1581 // longer period
+1580
+1577
+1571
+1567
+1437
+
+
+16
+17
+18
+19
+20
+21
+
+(
+Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr).addSpec(\reset, [0, 1, \lin, 1]);
+Ndef(\lfsr).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider
+Ndef(\lfsr, {
+	var polynomial = \polynomial.kr(0);
+	var reset = \reset.tr(0);
+	var seed = BitVal.altering(2r1101101101101011);
+	var tFreq = \tFreq.kr(100);
+	var trig = Impulse.ar(tFreq);
+	var bits = Demand.ar(
+		trig: trig,
+		reset: reset,
+		demandUGens: DBitLFSR(
+			mask:     BitVal.kr(polynomial),
+			resetval: polynomial
+		)
+	);
+
+	BitDAC.ar(bits, 16).range(-1, 1)!2;
+})
+)
+
+
+
+(
+Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr).addSpec(\reset, [0, 1, \lin, 1]);
+Ndef(\lfsr).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider
+Ndef(\lfsr, {
+	var polynomial = \polynomial.kr(0);
+	var reset = \reset.tr(0);
+	var seed = IRand(0, 65535).poll(0);
+	var tFreq = \tFreq.kr(100);
+	var trig = Impulse.ar(tFreq);
+	var bits = Demand.ar(
+		trig: trig,
+		reset: reset,
+		demandUGens: DBitLFSR(
+			mask:     BitVal.kr(polynomial),
+			resetval: BitVal.kr(seed)
+		)
+	);
+
+	BitDAC.ar(bits, 16).range(-1, 1)!2;
+})
+)
+
+
+
+(
+Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr).addSpec(\reset, [0, 1, \lin, 1]);
+Ndef(\lfsr).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider, try <shift>+<up/down> in the NdefGUI numberbox...
+Ndef(\lfsr, {
+	var polynomial = LFNoise0.ar(50).range(16, 1220).round(1);
+	var reset = \reset.tr(0);
+	var seed = IRand(0, 65535).poll(0);
+	var tFreq = \tFreq.kr(100);
+	var trig = Impulse.ar(tFreq);
+	var bits = Demand.ar(
+		trig: trig,
+		reset: reset,
+		demandUGens: DBitLFSR(
+			mask:     BitVal.ar(polynomial),
+			resetval: BitVal.kr(seed)
+		)
+	);
+
+	LeakDC.ar(BitDAC.ar(bits, 16).range(-1, 1))!2;
+})
+)
+
+
+var num = 2r10100111;
+(num bitXor: (num >> 1)).asBinaryString(16);
+
+
+Ndef(\a, {
+	var val = MouseX.kr(0, 65535);
+	var trig = Changed.kr(val, 0);
+	BitPrint.kr(BitVal.kr(val), Impulse.kr(10))
+})
+
+
+////////////////////////////////////////////////////////////
+
 (
 // right-shift
 var i_hop = 5;

@@ -1,0 +1,39 @@
+class:: DBitLFSR
+summary:: 16bit Demand-rate linear-feedback shift register
+related:: Classes/DBitShifter Classes/BitDAC Classes/BitAnd Classes/BitNot Classes/BitVal
+categories:: UGens>bitDSP
+
+description::
+
+16bit Demand-rate linear-feedback shift register implemented as Fibonacci-LFSR.
+
+classmethods::
+
+method::new
+
+argument::mask
+Bit value (use link::Classes/BitVal:: or link::Classes/DBitVal::) determining which bits act as tabs for the linear feedback operation. In LFSR-terms also called "polynomial".
+argument::resetval
+Bit value to reset the internal state to. In LFSR-terms also called "seed".
+
+discussion::
+
+note::
+Due to compute optimisation (one less shift operation needed), this LFSR implementation works with left-shift rather than (commonly notated) right-shift operations. I.e., values travel right-to-left and the masking polynomial (polynome indeces) accordingly needs to be read from right to to left: x^16 + x^15 + x^14 + ... + x^1
+::
+
+examples::
+
+Simple example
+code::
+(
+{var trig = Impulse.ar(300); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitLFSR(
+		mask:     BitVal.ir(2r1011010000000000), // maximum period, see e.g. 
+		resetval: BitVal.ir(2r11)
+	)),
+	trig)
+}.plot(0.15)
+// bit:
+)
+::
