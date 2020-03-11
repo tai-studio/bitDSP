@@ -1,0 +1,35 @@
+class:: BitShift
+summary:: invert bits in 16bit representation
+related:: Classes/DBitShifter Classes/BitDAC Classes/BitAnd
+categories:: UGens>BitDSP
+
+description::
+
+shifts bits in 16bit representation
+
+classmethods::
+
+method::ar, kr, ir
+
+argument::in
+input treated as code::uint16::, See link::Classes/BitVal:: for details.
+
+argument::num
+Shift by code::num.abs:: elements. If positive, shift left, if negative, shift right.
+
+argument::wrap
+If teletype::>0::, feed shifted value back in. Otherwise operate as common shift operation.
+
+
+examples::
+
+code::
+(
+{
+	var freq= MouseX.kr(0.0001, 2);
+	var size = 6;
+	var offset = MouseY.kr(0, 32-size);
+	BitShift.ar(LFTri.ar(freq), size,  offset)
+}.play
+)
+::

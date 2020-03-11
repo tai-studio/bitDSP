@@ -1,0 +1,32 @@
+class:: BitPrint
+summary:: print input in bit-representation
+related:: Classes/BitVal
+categories:: UGens>BitDSP
+
+description::
+
+print input in bit-representation.
+
+note::
+this method uses teletype::iostream:: internally and does not at all comply with UGen realtime safety standards. It should not be used in time-critical situations and only serves the purpose of crosschecking functionality.
+::
+
+classmethods::
+
+method::ar, kr, ir
+
+argument::input
+input treated as code::uint16::.
+
+
+argument::trig
+Trigger to print value
+
+
+examples::
+
+function tests
+code::
+{BitPrint.kr(BitVal.kr(2r0110), Impulse.kr(0))}.plot(0.01)
+// bit: 2r0000000000000110
+::

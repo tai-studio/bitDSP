@@ -1,4 +1,5 @@
 s.reboot
+SCDoc.indexAllDocuments(true)
 
 // BitDAC
 
@@ -35,10 +36,19 @@ s.reboot
 // Bit*
 
 
-BitVal
+
+2r1111111111111111
+
+{BitPrint.kr(BitVal.kr(2r0110), Impulse.kr(0))}.plot(0.01)
+// bit: 2r0000000000000110
 
 
+UGen().respondsTo(\rate)
+0.rate
 
+2 bitXor: (2 >> 1)
+
+.respondsTo(\rate)
 
 // BitNot
 {BitPrint.kr(BitNot.kr(BitVal.kr(2r0)), Impulse.kr(0))}.plot(0.01)
@@ -76,6 +86,26 @@ BitVal
 {RandSeed.ir(123); BitPrint.ar(BitScramble.ar(BitVal.ar(2r01111111110)), Impulse.ar(0))}.plot(0.01)
 // bit: 2r0110011100100111
 
+s.reboot
+
+// BitShift
+{BitPrint.kr(BitShift.kr(BitVal.max, 1, 0), Impulse.kr(0))}.plot(0.1)
+// bit: 2r1111111111111110
+{BitPrint.kr(BitShift.kr(BitVal.max, -1, 0), Impulse.kr(0))}.plot(0.1)
+// bit: 2r0111111111111111
+{BitPrint.kr(BitShift.kr(BitVal.max, -10, 0), Impulse.kr(0))}.plot(0.1)
+// bit: 2r0000000000111111
+{BitPrint.kr(BitShift.kr(BitVal.max, 10, 0), Impulse.kr(0))}.plot(0.1)
+// bit: 2r1111110000000000
+
+{BitPrint.kr(BitShift.kr(BitVal.ir(2r1111111111111110), -10, 1), Impulse.kr(0))}.plot(0.1)
+// bit: 2r1111111110111111
+{BitPrint.kr(BitShift.kr(BitVal.ir(2r1111111111111110), 10, 1), Impulse.kr(0))}.plot(0.1)
+// bit: 2r1111111110111111
+
+
+{BitPrint.ar(BitAnd.ar(BitVal.ar(2r0110), BitVal.ar(2r1010)), Impulse.ar(0))}.plot(0.1)
+// bit: 2r0000000000000010
 
 
 // DBit*
@@ -147,6 +177,36 @@ s.reboot
 )
 
 
+// DBitShift
+( // positive shift (left)
+{var trig = Impulse.ar(0); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitShift(BitVal.ir(2r1111111111111111), num: 1, wrap: 0)),
+	trig)
+}.plot(0.01)
+// bit: 2r1111111111111110
+)
+( // negative shift (right)
+{var trig = Impulse.ar(0); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitShift(BitVal.ir(2r1111111111111111), num: -1, wrap: 0)),
+	trig)
+}.plot(0.01)
+// bit: 2r1111111111111110
+)
+( // negative shift (right) with wrap
+{var trig = Impulse.ar(0); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitShift(BitVal.ir(2r1111111111111110), num: -5, wrap: 1)),
+	trig)
+}.plot(0.01)
+// bit: 2r1111011111111111
+)
+( // positive shift (left) with wrap
+{var trig = Impulse.ar(0); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitShift(BitVal.ir(2r1111111111111110), num: 5, wrap: 1)),
+	trig)
+}.plot(0.01)
+// bit: 2r1111111111011111
+)
+
 
 // DBitShifter
 ( // negative hop
@@ -154,7 +214,22 @@ s.reboot
 	TDemand.ar(trig, 0, demandUGens: DBitShifter(0, -1, 0, BitVal.ir(2r1111111111111111))),
 	trig)
 }.plot(0.15)
-// bit:
+// bit: 2r0111111111111111
+// bit: 2r0011111111111111
+// bit: 2r0001111111111111
+// bit: 2r0000111111111111
+// bit: 2r0000011111111111
+// bit: 2r0000001111111111
+// bit: 2r0000000111111111
+// bit: 2r0000000011111111
+// bit: 2r0000000001111111
+// bit: 2r0000000000111111
+// bit: 2r0000000000011111
+// bit: 2r0000000000001111
+// bit: 2r0000000000000111
+// bit: 2r0000000000000011
+// bit: 2r0000000000000001
+// bit: 2r0000000000000000
 )
 
 ( // positive hop
@@ -162,7 +237,22 @@ s.reboot
 	TDemand.ar(trig, 0, demandUGens: DBitShifter(0, 1, 0, BitVal.ir(2r1))),
 	trig)
 }.plot(0.15)
-// bit:
+// bit: 2r0000000000000010
+// bit: 2r0000000000000100
+// bit: 2r0000000000001000
+// bit: 2r0000000000010000
+// bit: 2r0000000000100000
+// bit: 2r0000000001000000
+// bit: 2r0000000010000000
+// bit: 2r0000000100000000
+// bit: 2r0000001000000000
+// bit: 2r0000010000000000
+// bit: 2r0000100000000000
+// bit: 2r0001000000000000
+// bit: 2r0010000000000000
+// bit: 2r0100000000000000
+// bit: 2r1000000000000000
+// bit: 2r0000000000000000
 )
 
 ( // positive hop > 1
@@ -170,7 +260,22 @@ s.reboot
 	TDemand.ar(trig, 0, demandUGens: DBitShifter(0, 2, 0, BitVal.ir(2r1))),
 	trig)
 }.plot(0.15)
-// bit:
+// bit: 2r0000000000000100
+// bit: 2r0000000000010000
+// bit: 2r0000000001000000
+// bit: 2r0000000100000000
+// bit: 2r0000010000000000
+// bit: 2r0001000000000000
+// bit: 2r0100000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
+// bit: 2r0000000000000000
 )
 
 
@@ -179,9 +284,46 @@ s.reboot
 	TDemand.ar(trig, 0, demandUGens: DBitShifter(BitVal.ir(2r1), 2, 1, BitVal.ir(2r1))),
 	trig)
 }.plot(0.15)
-// bit:
+// bit: 2r0000000000000100
+// bit: 2r0000000000010000
+// bit: 2r0000000001000000
+// bit: 2r0000000100000000
+// bit: 2r0000010000000000
+// bit: 2r0001000000000000
+// bit: 2r0100000000000000
+// bit: 2r0000000000000001
+// bit: 2r0000000000000100
+// bit: 2r0000000000010000
+// bit: 2r0000000001000000
+// bit: 2r0000000100000000
+// bit: 2r0000010000000000
+// bit: 2r0001000000000000
+// bit: 2r0100000000000000
+// bit: 2r0000000000000001
 )
 
+( // negative hop < -1 & wrap == 1
+{var trig = Impulse.ar(100); BitPrint.ar(
+	TDemand.ar(trig, 0, demandUGens: DBitShifter(BitVal.ir(2r1), -2, 1, BitVal.ir(2r1))),
+	trig)
+}.plot(0.15)
+// bit: 2r0100000000000000
+// bit: 2r0001000000000000
+// bit: 2r0000010000000000
+// bit: 2r0000000100000000
+// bit: 2r0000000001000000
+// bit: 2r0000000000010000
+// bit: 2r0000000000000100
+// bit: 2r0000000000000001
+// bit: 2r0100000000000000
+// bit: 2r0001000000000000
+// bit: 2r0000010000000000
+// bit: 2r0000000100000000
+// bit: 2r0000000001000000
+// bit: 2r0000000000010000
+// bit: 2r0000000000000100
+// bit: 2r0000000000000001
+)
 
 ( // positive hop > 1 & wrap == 0
 {var trig = Impulse.ar(100); BitPrint.ar(
@@ -207,6 +349,7 @@ s.reboot
 }.plot(0.15)
 // bit:
 )
+
 
 Ndef(\lfsr).edit
 (

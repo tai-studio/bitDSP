@@ -1,12 +1,11 @@
-class:: BitAnd
-summary:: bit-wise and
-related:: Classes/BitOr, Classes/BitNot, Classes/BitXor, Classes/DBitAnd, Classes/DBitOr, Classes/DBitNot, Classes/DBitXor
+class:: BitOr
+summary:: bit-wise or
+related:: Classes/BitAnd Classes/BitNot Classes/BitXor Classes/DBitAnd Classes/DBitOr Classes/DBitNot Classes/DBitXor
 categories:: UGens>BitDSP
 
 description::
 
-bit-wise and
-
+bit-wise or.
 
 classmethods::
 
@@ -15,17 +14,17 @@ method::ar, kr, ir
 argument::in1
 input treated as code::uint16::, See link::Classes/BitVal:: for details.
 
-argument::in1
+argument::in2
 input treated as code::uint16::, See link::Classes/BitVal:: for details.
 
 examples::
 
 function tests
 code::
-{BitPrint.kr(BitAnd.kr(BitVal.kr(2r0110), BitVal.kr(2r1010)), Impulse.kr(0))}.plot(0.1)
-// bit: 2r0000000000000010
-{BitPrint.ar(BitAnd.ar(BitVal.ar(2r0110), BitVal.ar(2r1010)), Impulse.ar(0))}.plot(0.1)
-// bit: 2r0000000000000010
+{BitPrint.kr(BitOr.kr(BitVal.kr(2r0110), BitVal.kr(2r1010)), Impulse.kr(0))}.plot(0.1)
+// bit: 2r0000000000001110
+{BitPrint.ar(BitOr.ar(BitVal.ar(2r0110), BitVal.ar(2r1010)), Impulse.ar(0))}.plot(0.1)
+// bit: 2r0000000000001110
 ::
 
 sound test
@@ -36,7 +35,7 @@ code::
 	var freq= MouseX.kr(0.0001, 2);
 	var size = 6;
 	var offset = MouseY.kr(0, 32-size);
-	BitAnd.ar(LFTri.ar(freq), size,  offset)
+	BitOr.ar(LFTri.ar(freq), size,  offset)
 }.play
 )
 ::
@@ -58,7 +57,7 @@ Ndef(\fmBanger, {|carFreq = 67|
 	var size = 3;
 	var offset = (19..32-size).clump(2).flop.collect{|row, i| i.odd.if({row.reverse}, {row})}.lace;
 	var lfFreq = LFPulse.kr(0.5).range(4/3, 4);
-	var dac = BitAnd.kr(SinOsc.kr(lfFreq), size,  offset);
+	var dac = BitOr.kr(SinOsc.kr(lfFreq), size,  offset);
 	var snd;
 	var wet = LFSaw.kr(0.25, 1).range(0, 1);
 	

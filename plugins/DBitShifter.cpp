@@ -73,14 +73,14 @@ void DBitShifter_next(DBitShifter *unit, int inNumSamples)
             bit_fill = (bit16(0xffff) << i_invHop) & bit_fill;
             bit_fill >>= i_invHop;
         } else { 
-            // i_hop *= -1;
             i_hop = -i_hop;
             // right-shift
             bit_state >>= i_hop;
 
             // fill with material
-            bit_fill = (bit16(0xffff) >> i_hop) & bit_fill;
-            bit_fill <<= i_hop;
+            int i_invHop = 16-i_hop;
+            bit_fill = (bit16(0xffff) >> i_invHop) & bit_fill;
+            bit_fill <<= i_invHop;
         }
         bit_state |=  bit_fill;
 

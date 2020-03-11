@@ -1,6 +1,6 @@
 class:: BitDAC
 summary:: render number from uint32 interpreted as bitvalues
-related:: Classes/DIBitShifter
+related:: Classes/DBitShifter
 categories:: UGens>BitDSP
 
 description::
@@ -11,7 +11,7 @@ classmethods::
 
 method::ar, kr
 
-argument::input
+argument::in
 input treated as code::uint32::
 
 argument::size

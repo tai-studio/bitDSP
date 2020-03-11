@@ -1,0 +1,25 @@
+class:: BitScramble
+summary:: scramble bits
+related:: Classes/BitSort Classes/BitAnd Classes/BitOr Classes/BitNot Classes/BitXor
+categories:: UGens>BitDSP
+
+description::
+
+scramble bits in int16 representation
+
+classmethods::
+
+method::ar, kr, ir
+
+argument::in
+input treated as code::uint16::, See link::Classes/BitVal:: for details.
+
+examples::
+
+function tests
+code::
+{RandSeed.ir(123); BitPrint.kr(BitScramble.kr(BitVal.kr(2r01111111110)), Impulse.kr(0))}.plot(0.01)
+// bit: 2r0110011100100111
+{RandSeed.ir(123); BitPrint.ar(BitScramble.ar(BitVal.ar(2r01111111110)), Impulse.ar(0))}.plot(0.01)
+// bit: 2r0110011100100111
+::

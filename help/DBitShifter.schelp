@@ -1,12 +1,11 @@
 class:: DBitShifter
 summary:: 16bit Demand-rate bitshifter interpreting input as bit-array
-related:: Classes/BitDAC Classes/BitAnd Classes/BitNot Classes/BitVal
-categories:: UGens>bitDSP
+related:: Classes/BitDAC, Classes/BitAnd, Classes/BitNot, Classes/BitVal
+categories:: UGens>BitDSP, UGens>Demand
 
 description::
 
 16bit Demand-rate bitshifter
-
 
 classmethods::
 

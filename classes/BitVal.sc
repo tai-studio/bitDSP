@@ -12,6 +12,23 @@ BitVal : UGen {
 	*altering {
 		^this.ir(2r0101010101010101)		
 	}
+	*gray{|in|
+		var val;
+		switch (in.rate, 
+			\scalar,	{
+				val = this.ir(in); 
+				^BitXor.ar(val, BitShift.ir(val, -1 /* right shift */))
+			}, 
+			\audio,	{
+				val = this.ar(in); 
+				^BitXor.ar(val, BitShift.ar(val, -1 /* right shift */))
+			},
+			\control,	{
+				val = this.kr(in); 
+				^BitXor.ar(val, BitShift.kr(val, -1 /* right shift */))
+			}
+		)
+	}
 	*ir { |in|
 		^this.multiNew('scalar', in);
 	}

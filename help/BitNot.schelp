@@ -1,22 +1,18 @@
 class:: BitNot
 summary:: invert bits in 16bit representation
-related:: Classes/DIBitShifter Classes/BitDAC Classes/BitAnd
-categories:: UGens>bitDSP
+related:: Classes/DBitShifter Classes/BitDAC Classes/BitAnd
+categories:: UGens>BitDSP
 
 description::
 
+invert bits in 16bit representation
+
 classmethods::
 
-method::ar, kr
+method::ar, kr, ir
 
 argument::in
-input treated as code::uint16::
-
-argument::size
-number of bits used for conversion
-
-argument::offset
-offset for bitmask
+input treated as code::uint16::, See link::Classes/BitVal:: for details.
 
 examples::
 

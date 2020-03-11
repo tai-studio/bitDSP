@@ -1,0 +1,36 @@
+class:: BitVal
+summary:: convert input into bit-representation
+related:: Classes/BitPrint, Classes/BitScramble, Classes/BitAnd, Classes/BitOr, Classes/BitNot, Classes/BitXor
+categories:: UGens>BitDSP
+
+description::
+
+convert input into 16-bit representation to be used with teletype::BitDSP:: UGens.
+
+classmethods::
+
+method::ar, kr, ir
+
+argument::in
+input to be converted to bit representation as required by BitDSP Ugens.
+
+
+method::max
+
+maximum possible values, i.e. code::2r1111111111111111 == 65535::.
+
+method::min
+
+minimum possible values, i.e. code::2r0000000000000000 == 0::.
+
+method:: altering
+
+altering bits, i.e. code::2r0101010101010101::
+
+examples::
+
+function tests
+code::
+{BitPrint.kr(BitVal.kr(2r0110), Impulse.kr(0))}.plot(0.01)
+// bit: 2r0000000000000110
+::

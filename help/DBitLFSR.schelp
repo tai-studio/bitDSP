@@ -1,7 +1,7 @@
 class:: DBitLFSR
 summary:: 16bit Demand-rate linear-feedback shift register
 related:: Classes/DBitShifter Classes/BitDAC Classes/BitAnd Classes/BitNot Classes/BitVal
-categories:: UGens>bitDSP
+categories:: UGens>BitDSP
 
 description::
 

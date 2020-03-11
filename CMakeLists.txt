@@ -139,6 +139,7 @@ set(BitOr_sc_files
     classes/BitOr.sc
 )
 set(BitOr_schelp_files
+    help/BitOr.schelp
 )
 
 sc_add_server_plugin(
@@ -163,6 +164,7 @@ set(BitPrint_sc_files
     classes/BitPrint.sc
 )
 set(BitPrint_schelp_files
+    help/BitPrint.schelp
 )
 
 sc_add_server_plugin(
@@ -187,6 +189,7 @@ set(BitScramble_sc_files
     classes/BitScramble.sc
 )
 set(BitScramble_schelp_files
+    help/BitScramble.schelp
 )
 
 sc_add_server_plugin(
@@ -201,6 +204,31 @@ sc_add_server_plugin(
 ####################################################################################################
 
 ####################################################################################################
+# Begin target BitShift
+
+set(BitShift_cpp_files
+    plugins/BitShift.cpp
+    plugins/BitShift.hpp
+)
+set(BitShift_sc_files
+    classes/BitShift.sc
+)
+set(BitShift_schelp_files
+    help/BitShift.schelp
+)
+
+sc_add_server_plugin(
+    "bitDSP/BitShift" # desination directory
+    "BitShift" # target name
+    "${BitShift_cpp_files}"
+    "${BitShift_sc_files}"
+    "${BitShift_schelp_files}"
+)
+
+# End target BitShift
+####################################################################################################
+
+####################################################################################################
 # Begin target BitSort
 
 set(BitSort_cpp_files
@@ -211,6 +239,7 @@ set(BitSort_sc_files
     classes/BitSort.sc
 )
 set(BitSort_schelp_files
+    help/BitSort.schelp
 )
 
 sc_add_server_plugin(
@@ -235,6 +264,7 @@ set(BitVal_sc_files
     classes/BitVal.sc
 )
 set(BitVal_schelp_files
+    help/BitVal.schelp
 )
 
 sc_add_server_plugin(
@@ -259,6 +289,7 @@ set(BitXor_sc_files
     classes/BitXor.sc
 )
 set(BitXor_schelp_files
+    help/BitXor.schelp
 )
 
 sc_add_server_plugin(
@@ -386,6 +417,29 @@ sc_add_server_plugin(
 )
 
 # End target DBitScramble
+####################################################################################################
+
+####################################################################################################
+# Begin target DBitShift
+
+set(DBitShift_cpp_files
+    plugins/DBitShift.cpp
+)
+set(DBitShift_sc_files
+    classes/DBitShift.sc
+)
+set(DBitShift_schelp_files
+)
+
+sc_add_server_plugin(
+    "bitDSP/DBitShift" # desination directory
+    "DBitShift" # target name
+    "${DBitShift_cpp_files}"
+    "${DBitShift_sc_files}"
+    "${DBitShift_schelp_files}"
+)
+
+# End target DBitShift
 ####################################################################################################
 
 ####################################################################################################

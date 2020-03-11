@@ -1,0 +1,25 @@
+class:: BitSort
+summary:: sort bits
+related:: Classes/BitScramble, Classes/BitAnd, Classes/BitOr, Classes/BitNot, Classes/BitXor
+categories:: UGens>BitDSP
+
+description::
+
+sort bits in int16 representation
+
+classmethods::
+
+method::ar, kr, ir
+
+argument::in
+input treated as code::uint16::, See link::Classes/BitVal:: for details.
+
+examples::
+
+function tests
+code::
+{BitPrint.kr(BitSort.kr(BitVal.kr(2r0110)), Impulse.kr(0))}.plot(0.01)
+// bit: 2r0000000000000011
+{BitPrint.ar(BitSort.ar(BitVal.ar(2r0110)), Impulse.ar(0))}.plot(0.01)
+// bit: 2r0000000000000011
+::
