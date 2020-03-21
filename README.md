@@ -11,9 +11,8 @@ supercollider bit-array dsp UGens
 
 ### Building
 
-Clone the project:
+Clone the project (see hoster instructions) and
 
-    git clone https://LFSaw/bitdsp
     cd bitdsp
     mkdir build
     cd build
