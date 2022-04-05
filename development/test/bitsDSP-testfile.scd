@@ -4,7 +4,7 @@ SCDoc.indexAllDocuments(true)
 // BitDAC
 
 (
-// huom! selection of kr/ar for time-varying parameters has significant effect on calculated artifacts
+// huom! selection of kr/ar for time-varying parameters has significant effect on calculated artifacts.
 // the exact position of e.g. the appearance of new values (when does rounding happen wrt. other parameters?) causes bit-glitches
 {
 	var size_ar, offset_ar;
@@ -338,7 +338,7 @@ s.reboot
 /// DBitLFSR
 
 
-// due to compute optimisation (one less shift operation needed), LFSR works with left-shift rather than (common) right-shift operations. I.e., values travel right-to-left and polynomial (polynome indeces) need to be read from right to to left: x^16 + x^15 + x^14 + ... + x^1
+// due to compute optimisation (one less shift operation needed), LFSR works with left-shift rather than (common) right-shift operations. I.e., values travel right-to-left and polynomial (polynome indices) need to be read from right to to left: x^16 + x^15 + x^14 + ... + x^1
 (
 {var trig = Impulse.ar(300); BitPrint.ar(
 	TDemand.ar(trig, 0, demandUGens: DBitLFSR(
@@ -413,10 +413,10 @@ Ndef(\lfsr, {
 
 
 (
-Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
-Ndef(\lfsr).addSpec(\reset, [0, 1, \lin, 1]);
-Ndef(\lfsr).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider
-Ndef(\lfsr, {
+Ndef(\lfsr1).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr1).addSpec(\reset, [0, 1, \lin, 1]);
+Ndef(\lfsr1).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider
+Ndef(\lfsr1, {
 	var polynomial = \polynomial.kr(0);
 	var reset = \reset.tr(0);
 	var seed = IRand(0, 65535).poll(0);
@@ -438,10 +438,10 @@ Ndef(\lfsr, {
 
 
 (
-Ndef(\lfsr).addSpec(\tFreq, [1, 10000, \exp]);
-Ndef(\lfsr).addSpec(\reset, [0, 1, \lin, 1]);
-Ndef(\lfsr).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider, try <shift>+<up/down> in the NdefGUI numberbox...
-Ndef(\lfsr, {
+Ndef(\lfsr2).addSpec(\tFreq, [1, 10000, \exp]);
+Ndef(\lfsr2).addSpec(\reset, [0, 1, \lin, 1]);
+Ndef(\lfsr2).addSpec(\polynomial, [0, 65535, \lin, 1]); // you'll never hit all of them with a slider, try <shift>+<up/down> in the NdefGUI numberbox...
+Ndef(\lfsr2, {
 	var polynomial = LFNoise0.ar(50).range(16, 1220).round(1);
 	var reset = \reset.tr(0);
 	var seed = IRand(0, 65535).poll(0);
@@ -489,3 +489,15 @@ var bit_state = 2r1111111111111111;
 )
 
 (16rffff).asBinaryString(16)
+
+
+(
+{var trig = Impulse.ar(300); BitPrint.ar(
+    TDemand.ar(trig, 0, demandUGens: DBitLFSR(
+        mask:     BitVal.ir(2r1011010000000000), // maximum period, see e.g.
+        resetval: BitVal.ir(2r11)
+    )),
+    trig)
+}.plot(0.15)
+// bit:
+)

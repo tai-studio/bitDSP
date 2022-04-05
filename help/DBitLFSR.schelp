@@ -29,11 +29,11 @@ code::
 (
 {var trig = Impulse.ar(300); BitPrint.ar(
 	TDemand.ar(trig, 0, demandUGens: DBitLFSR(
-		mask:     BitVal.ir(2r1011010000000000), // maximum period, see e.g. 
+		// maximum period, see e.g. https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Fibonacci_LFSRs
+		mask:     BitVal.ir(2r1011010000000000), 
 		resetval: BitVal.ir(2r11)
 	)),
 	trig)
 }.plot(0.15)
-// bit:
 )
 ::
