@@ -38,5 +38,4 @@ script with `--help` to see all available options.
 
 ### Thanks
 
-> This project has received funding by the Austrian Science Fund (FWF)
-as project AR 445-G24.
+The development of this code was made possible by means of funding by the Austrian Science Fund (FWF) as project AR 445-G24 / [rotting sounds](https://rottingsounds.org).
